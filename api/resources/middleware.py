@@ -9,7 +9,7 @@ from flask import current_app, jsonify, request
 from resources.database import Database
 
 
-def token_required(f):
+def token_required(func):
     """_summary_
 
     Args:
@@ -19,7 +19,7 @@ def token_required(f):
         _type_: _description_
     """
 
-    @wraps(f)
+    @wraps(func)
     def decorated(*args, **kwargs):
         token = None
         if "Authorization" in request.headers:
@@ -54,6 +54,6 @@ def token_required(f):
         except Exception as ex:
             return {"message": "Something went wrong", "data": None, "error": str(ex)}, 500
 
-        return f(*args, **kwargs)
+        return func(*args, **kwargs)
 
     return decorated
