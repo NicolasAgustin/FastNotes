@@ -1,0 +1,22 @@
+# Agustin Wisky <a.wisky@patagon.io> 
+
+version: '3'
+services:
+  fastnotes:
+    build: .
+    environment:
+      - DEBUG=true
+      - COMMAND=init
+      - LOG_CONFIG_PATH=./logging.ini
+      - DB_PORT=27017
+      - DB_HOST=mongodb+srv://root:root@cluster0.ded2q.mongodb.net/?retryWrites=true&w=majority
+      - DB_NAME=api
+      - SECRET_KEY=hasidawl1!@3
+    ports:
+      - "1022:22"
+      - "3002:3002" # Debugpy if Debug=true | Matching the .vscode launch "debugServer": 3002 
+      - "4444:4444"
+      - "5000:5000"
+    tty: true
+    volumes:
+      - ./api:/application/api
