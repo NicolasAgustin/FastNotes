@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "app_function": "app.app",
+        "profile_name": "default",
+        "project_name": "fastnotes",
+        "runtime": "python3.8",
+        "s3_bucket": "zappa-vo58w3b6h",
+        "aws_region": "us-east-1"
+    }
+}

@@ -4,10 +4,15 @@
 
 import json
 import os
+
+import traceback
+
 from datetime import datetime, timedelta, timezone
 
 import debugpy
 import jwt
+
+from decouple import config
 from flask import Flask, jsonify, request
 from resources.database import Database
 from resources.middleware import token_required
@@ -15,7 +20,7 @@ from resources.middleware import token_required
 app = Flask(__name__)
 
 with app.app_context():
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+    app.config["SECRET_KEY"] = config("SECRET_KEY")
     app.config["DATABASE"] = Database()
 
 
@@ -46,6 +51,7 @@ def get_notes(userid: int):
         return jsonify(notes), 200
 
     except Exception as ex:
+        traceback.print_exc()
         return jsonify({"message": "Something went wrong!", "error": str(ex), "data": None}), 500
 
 
@@ -73,6 +79,7 @@ def create_note():
         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
     except Exception as ex:
+        traceback.print_exc()
         return jsonify({"message": "Something went wrong!", "error": str(ex), "data": None}), 500
 
 
@@ -122,6 +129,7 @@ def auth():
         return jsonify({"message": "Successfully fetched auth token", "data": token}), 200
 
     except Exception as ex:
+        traceback.print_exc()
         return jsonify({"message": "Something went wrong!", "error": str(ex), "data": None}), 500
 
 
