@@ -4,16 +4,14 @@
 
 import json
 import os
-
 import traceback
-
 from datetime import datetime, timedelta, timezone
 
 import debugpy
 import jwt
-
 from decouple import config
 from flask import Flask, jsonify, request
+
 from resources.database import Database
 from resources.middleware import token_required
 
@@ -48,6 +46,7 @@ def get_notes(userid: int):
     try:
         _db: Database = app.config["DATABASE"]
         notes = _db.find("notes", {"created_by": int(userid)})
+        list(map(lambda x: x.pop("_id"), notes))
         return jsonify(notes), 200
 
     except Exception as ex:
