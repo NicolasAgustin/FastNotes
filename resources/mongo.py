@@ -1,8 +1,6 @@
 """Mongo connector"""
 
-import os
 from decouple import config
-
 from pymongo.mongo_client import MongoClient
 
 

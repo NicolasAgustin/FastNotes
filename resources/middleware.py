@@ -1,11 +1,13 @@
 """Middleware module"""
 
 # pylint: disable=broad-except
+# pylint: disable=duplicate-code
 
 from functools import wraps
 
 import jwt
 from flask import current_app, jsonify, request
+
 from resources.database import Database
 
 
