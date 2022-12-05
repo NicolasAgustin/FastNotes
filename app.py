@@ -46,7 +46,10 @@ def get_notes(userid: int):
     try:
         _db: Database = app.config["DATABASE"]
         notes = _db.find("notes", {"created_by": int(userid)})
-        list(map(lambda x: x.pop("_id"), notes))
+
+        for note in notes:
+            note["_id"] = str(note["_id"])
+
         return jsonify(notes), 200
 
     except Exception as ex:
