@@ -31,6 +31,15 @@ class Database:
 
         return list(results)
 
+    def delete(self, collection: str, query: dict):
+        """_summary_
+
+        Args:
+            collection (str): _description_
+            query (dict): _description_
+        """
+        self.__client.database.get_collection(collection).delete_many(query)
+
     def find_one(self, collection: str, query: dict) -> dict:
         """_summary_
 
@@ -51,3 +60,13 @@ class Database:
             document (dict): _description_
         """
         self.__client.database.get_collection(collection).insert_one(document)
+
+    def update_one(self, collection: str, query: dict, document: dict):
+        """_summary_
+
+        Args:
+            collection (str): _description_
+            document (dict): _description_
+        """
+
+        self.__client.database.get_collection(collection).update_one(query, {"$set": document})

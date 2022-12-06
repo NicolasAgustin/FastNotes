@@ -9,6 +9,7 @@ from datetime import datetime, timedelta, timezone
 
 import debugpy
 import jwt
+from bson import ObjectId
 from decouple import config
 from flask import Flask, jsonify, request
 
@@ -57,6 +58,50 @@ def get_notes(userid: int):
         return jsonify({"message": "Something went wrong!", "error": str(ex), "data": None}), 500
 
 
+@app.route("/update", methods=["POST"])
+@token_required
+def update_note():
+    if os.getenv("DEBUG") == "true":
+        debugpy.breakpoint()
+
+    try:
+        data = request.json
+
+        text = data["text"]
+        user_id = data["created_by"]
+
+        _db: Database = app.config["DATABASE"]
+        _db.update_one(
+            "notes",
+            {"_id": ObjectId(data["_id"]), "created_by": user_id},
+            {"text": text}
+        )
+
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
+
+    except Exception as ex:
+        traceback.print_exc()
+        return jsonify({"message": "Something went wrong!", "error": str(ex), "data": None}), 500
+
+
+@app.route("/delete/<noteid>", methods=["GET"])
+@token_required
+def delete_note(noteid: str):
+    if os.getenv("DEBUG") == "true":
+        debugpy.breakpoint()
+
+    try:
+        _db: Database = app.config["DATABASE"]
+        noteid = str(noteid)
+        _db.delete("notes", {"_id": ObjectId(noteid)})
+
+        return jsonify({"message": "OK"}), 200
+
+    except Exception as ex:
+        traceback.print_exc()
+        return jsonify({"message": "Something went wrong!", "error": str(ex), "data": None}), 500
+
+
 @app.route("/create", methods=["POST"])
 @token_required
 def create_note():
@@ -73,7 +118,7 @@ def create_note():
         data = request.json
 
         text = data["text"]
-        user_id = data["user"]
+        user_id = data["created_by"]
 
         _db: Database = app.config["DATABASE"]
         _db.insert("notes", {"text": text, "created_by": user_id, "closed": False})
